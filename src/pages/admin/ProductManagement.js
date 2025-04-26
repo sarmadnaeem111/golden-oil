@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col, Table, Button, Form, Modal, Spinner, Alert, Card, Image } from 'react-bootstrap';
+import { Container, Row, Col, Table, Button, Form, Modal, Spinner, Alert, Card, Image, Badge, ListGroup } from 'react-bootstrap';
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../../firebase/productService';
 import CloudinaryUploadWidget from '../../components/CloudinaryUploadWidget';
 
@@ -31,6 +31,19 @@ const ProductManagement = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const fileInputRef = useRef(null);
+
+  // New state to track viewport width
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  
+  // Listen for window resize events to detect mobile viewport
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -277,11 +290,12 @@ const ProductManagement = () => {
 
   return (
     <Container className="py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Product Management</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h1 className="me-2">Product Management</h1>
         <Button 
           variant="primary" 
           onClick={handleAddNewClick}
+          className="mt-2 mt-sm-0"
         >
           Add New Product
         </Button>
@@ -298,59 +312,116 @@ const ProductManagement = () => {
           </Spinner>
         </div>
       ) : products.length > 0 ? (
-        <Card className="shadow-sm">
-          <Table responsive hover className="mb-0">
-            <thead>
-              <tr>
-                <th style={{ width: '80px' }}>Image</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Discount</th>
-                <th>Stock</th>
-                <th>Weight</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <>
+          {/* Desktop View */}
+          {!isMobile && (
+            <Card className="shadow-sm d-none d-md-block">
+              <Table responsive hover className="mb-0">
+                <thead>
+                  <tr>
+                    <th style={{ width: '80px' }}>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th>Stock</th>
+                    <th>Weight</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map(product => (
+                    <tr key={product.id}>
+                      <td>
+                        <div className="d-flex align-items-center justify-content-center bg-light" style={{ width: '60px', height: '60px', borderRadius: '0.25rem' }}>
+                          <img 
+                            src={product.image || 'https://via.placeholder.com/50?text=No+Image'} 
+                            alt={product.name}
+                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                            className="rounded"
+                          />
+                        </div>
+                      </td>
+                      <td>{product.name}</td>
+                      <td>Rs {product.price.toFixed(2)}</td>
+                      <td>{product.discount ? `${product.discount}%` : '0%'}</td>
+                      <td>{product.stock || 'N/A'}</td>
+                      <td>{product.weight ? `${product.weight} ${product.weightUnit}` : 'N/A'}</td>
+                      <td>
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleEditClick(product)}
+                        >
+                          Edit
+                        </Button>
+                        <Button 
+                          variant="outline-danger" 
+                          size="sm"
+                          onClick={() => handleDeleteClick(product)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
+          )}
+          
+          {/* Mobile View */}
+          <div className="d-md-none">
+            <ListGroup className="mb-4">
               {products.map(product => (
-                <tr key={product.id}>
-                  <td>
-                    <div className="d-flex align-items-center justify-content-center bg-light" style={{ width: '60px', height: '60px', borderRadius: '0.25rem' }}>
-                      <img 
-                        src={product.image || 'https://via.placeholder.com/50?text=No+Image'} 
-                        alt={product.name}
-                        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                        className="rounded"
-                      />
+                <ListGroup.Item key={product.id} className="px-2 py-3">
+                  <div className="d-flex align-items-start">
+                    <div className="me-3 mt-1">
+                      <div className="d-flex align-items-center justify-content-center bg-light" style={{ width: '50px', height: '50px', borderRadius: '0.25rem' }}>
+                        <img 
+                          src={product.image || 'https://via.placeholder.com/50?text=No+Image'} 
+                          alt={product.name}
+                          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                          className="rounded"
+                        />
+                      </div>
                     </div>
-                  </td>
-                  <td>{product.name}</td>
-                  <td>${product.price.toFixed(2)}</td>
-                  <td>{product.discount ? `${product.discount}%` : '0%'}</td>
-                  <td>{product.stock || 'N/A'}</td>
-                  <td>{product.weight ? `${product.weight} ${product.weightUnit}` : 'N/A'}</td>
-                  <td>
-                    <Button 
-                      variant="outline-primary" 
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleEditClick(product)}
-                    >
-                      Edit
-                    </Button>
-                    <Button 
-                      variant="outline-danger" 
-                      size="sm"
-                      onClick={() => handleDeleteClick(product)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
+                    <div className="flex-grow-1">
+                      <h6 className="mb-1">{product.name}</h6>
+                      <div className="d-flex flex-wrap align-items-center mb-2">
+                        <Badge bg="primary" className="me-2 mb-1">Rs {product.price.toFixed(2)}</Badge>
+                        {product.discount > 0 && (
+                          <Badge bg="warning" text="dark" className="me-2 mb-1">{product.discount}% OFF</Badge>
+                        )}
+                        <Badge bg="secondary" className="me-2 mb-1">Stock: {product.stock || 'N/A'}</Badge>
+                        {product.weight && (
+                          <Badge bg="info" className="mb-1">{product.weight} {product.weightUnit}</Badge>
+                        )}
+                      </div>
+                      <div className="d-flex mt-2">
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleEditClick(product)}
+                        >
+                          <i className="bi bi-pencil-fill me-1"></i> Edit
+                        </Button>
+                        <Button 
+                          variant="outline-danger" 
+                          size="sm"
+                          onClick={() => handleDeleteClick(product)}
+                        >
+                          <i className="bi bi-trash-fill me-1"></i> Delete
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </ListGroup.Item>
               ))}
-            </tbody>
-          </Table>
-        </Card>
+            </ListGroup>
+          </div>
+        </>
       ) : (
         <Alert variant="info">
           No products found. Click "Add New Product" to add one.
