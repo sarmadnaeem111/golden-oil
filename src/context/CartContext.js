@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { useToast } from './ToastContext';
 
 const CartContext = createContext();
 
@@ -98,6 +99,9 @@ function calculateTotal(items) {
 }
 
 export function CartProvider({ children }) {
+  // Always call the hook unconditionally
+  const toast = useToast();
+  
   // Load cart from localStorage on initial render
   const storedCart = localStorage.getItem('cart');
   const parsedStoredCart = storedCart ? JSON.parse(storedCart) : initialState;
@@ -126,6 +130,11 @@ export function CartProvider({ children }) {
         quantity
       }
     });
+    
+    // Show toast notification if available
+    if (toast && toast.showToast) {
+      toast.showToast(`${product.name} has been added to cart`, 'success');
+    }
   };
 
   // Remove item from cart
