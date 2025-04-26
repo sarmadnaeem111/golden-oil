@@ -12,9 +12,19 @@ const AppNavbar = ({ user }) => {
   const { itemCount } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Use the user passed in props or from AuthContext
   const authenticatedUser = user || currentUser;
+
+  // Update search query when on search page
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      const params = new URLSearchParams(location.search);
+      const query = params.get('q') || '';
+      setSearchQuery(query);
+    }
+  }, [location]);
 
   // Handle scroll effect
   useEffect(() => {
@@ -49,6 +59,18 @@ const AppNavbar = ({ user }) => {
   // Check if the link is active
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  // Handle search submission
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      // If empty search, show all products
+      navigate('/search');
+    }
+    setExpanded(false); // Close mobile menu if open
   };
 
   return (
@@ -89,15 +111,21 @@ const AppNavbar = ({ user }) => {
         </Navbar.Toggle>
         
         <Navbar.Collapse id="navbar-nav">
-          <Form className="d-flex mx-auto my-2 my-lg-0" style={{ maxWidth: '300px' }} onSubmit={(e) => { e.preventDefault(); navigate('/'); }}>
+          <Form className="d-flex mx-auto my-2 my-lg-0" style={{ maxWidth: '300px' }} onSubmit={handleSearch}>
             <InputGroup>
               <Form.Control
                 type="search"
                 placeholder="Search products..."
                 aria-label="Search"
                 className="border-end-0"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant={scrolled ? "outline-gold" : "outline-light"} className="border-start-0 bg-transparent">
+              <Button 
+                variant={scrolled ? "outline-gold" : "outline-light"} 
+                className="border-start-0 bg-transparent"
+                type="submit"
+              >
                 <i className="bi bi-search"></i>
               </Button>
             </InputGroup>
