@@ -483,3 +483,28 @@ body {
     min-height: 400px;
   }
 }
+
+/* Mobile Navigation Styles */
+@media (max-width: 992px) {
+  .mobile-nav-link {
+    background-color: white !important;
+    color: black !important;
+    margin: 5px 0;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .mobile-nav-link:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-nav-link i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+}
