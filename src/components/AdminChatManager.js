@@ -25,6 +25,26 @@ const AdminChatManager = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [chatToDelete, setChatToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [mobileView, setMobileView] = useState(false);
+  const [showChatList, setShowChatList] = useState(true);
+  
+  // Check window width on initial render and resize
+  useEffect(() => {
+    const checkWindowWidth = () => {
+      setMobileView(window.innerWidth < 768);
+    };
+    
+    // Check initially
+    checkWindowWidth();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkWindowWidth);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', checkWindowWidth);
+    };
+  }, []);
   
   // Load all chats for the admin
   useEffect(() => {
@@ -53,7 +73,7 @@ const AdminChatManager = () => {
     });
     
     return unsubscribe;
-  }, [currentUser, isAdmin, isOpen]);
+  }, [currentUser, isAdmin, isOpen, activeChat]);
   
   // Mark active chat as read when admin selects it
   useEffect(() => {
@@ -133,12 +153,37 @@ const AdminChatManager = () => {
     }
   };
   
+  // Handle chat selection - also toggle to chat view on mobile
+  const handleChatSelect = (chatId) => {
+    setActiveChat(chatId);
+    if (mobileView) {
+      setShowChatList(false);
+    }
+  };
+  
+  // Return to chat list on mobile
+  const handleBackToList = () => {
+    setShowChatList(true);
+  };
+  
   if (!isOpen) return null;
   
   return (
     <div className="admin-chat-window">
       <div className="chat-header">
-        <h5>Admin Chat Manager</h5>
+        <h5>
+          {mobileView && !showChatList && activeChat ? (
+            <Button 
+              variant="link" 
+              className="p-0 text-white me-2" 
+              onClick={handleBackToList}
+              style={{ fontSize: '1.2rem' }}
+            >
+              <i className="bi bi-arrow-left"></i>
+            </Button>
+          ) : null}
+          Admin Chat Manager
+        </h5>
         <button className="chat-close-btn" onClick={closeChat}>
           <i className="bi bi-x-lg"></i>
         </button>
@@ -154,10 +199,12 @@ const AdminChatManager = () => {
           <Tab.Container 
             id="chat-list" 
             activeKey={activeChat || 'empty'} 
-            onSelect={(k) => k !== 'empty' && setActiveChat(k)}
+            onSelect={(k) => k !== 'empty' && handleChatSelect(k)}
           >
-            <div className="chat-sidebar">
+            {/* Chat list sidebar - hidden on mobile when viewing a chat */}
+            <div className={`chat-sidebar ${mobileView && !showChatList ? 'd-none' : ''}`}>
               <h6 className="chat-sidebar-title">Customer Conversations</h6>
+              
               {chats.length === 0 ? (
                 <div className="text-center p-3 text-muted">
                   <p>No active customer chats</p>
@@ -213,7 +260,8 @@ const AdminChatManager = () => {
               )}
             </div>
             
-            <div className="chat-content">
+            {/* Chat content - hidden on mobile when showing the chat list */}
+            <div className={`chat-content ${mobileView && showChatList ? 'd-none' : ''}`}>
               <Tab.Content>
                 {chats.length === 0 ? (
                   <div className="text-center p-5 text-muted">
@@ -241,7 +289,11 @@ const AdminChatManager = () => {
       </div>
       
       {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+      <Modal 
+        show={showDeleteModal} 
+        onHide={() => setShowDeleteModal(false)}
+        centered
+      >
         <Modal.Header className={`bg-danger text-white`}>
           <Modal.Title>Delete Chat</Modal.Title>
         </Modal.Header>
