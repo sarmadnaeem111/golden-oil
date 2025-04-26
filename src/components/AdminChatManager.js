@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tab, Nav, Badge, Spinner } from 'react-bootstrap';
+import { Tab, Nav, Badge, Spinner, Button, Modal } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import { 
@@ -9,7 +9,9 @@ import {
   orderBy, 
   onSnapshot,
   doc,
-  updateDoc 
+  updateDoc,
+  deleteDoc,
+  getDocs 
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import ChatWindow from './ChatWindow';
@@ -20,6 +22,9 @@ const AdminChatManager = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeChat, setActiveChat] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [chatToDelete, setChatToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   
   // Load all chats for the admin
   useEffect(() => {
@@ -89,6 +94,45 @@ const AdminChatManager = () => {
     return messageDate.toLocaleDateString();
   };
   
+  // Handle chat deletion confirmation
+  const handleDeleteConfirm = (chatId) => {
+    setChatToDelete(chatId);
+    setShowDeleteModal(true);
+  };
+  
+  // Delete chat and all its messages
+  const deleteChat = async () => {
+    if (!chatToDelete) return;
+    
+    setDeleting(true);
+    try {
+      // 1. First delete all messages in the chat
+      const messagesRef = collection(db, 'chats', chatToDelete, 'messages');
+      const messagesSnapshot = await getDocs(messagesRef);
+      
+      const deletePromises = messagesSnapshot.docs.map(doc => 
+        deleteDoc(doc.ref)
+      );
+      
+      await Promise.all(deletePromises);
+      
+      // 2. Delete the chat document itself
+      await deleteDoc(doc(db, 'chats', chatToDelete));
+      
+      // 3. If the deleted chat was the active one, reset active chat
+      if (activeChat === chatToDelete) {
+        setActiveChat(null);
+      }
+      
+      setShowDeleteModal(false);
+      setChatToDelete(null);
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+    } finally {
+      setDeleting(false);
+    }
+  };
+  
   if (!isOpen) return null;
   
   return (
@@ -149,6 +193,18 @@ const AdminChatManager = () => {
                               {chat.unreadAdmin}
                             </Badge>
                           )}
+                          <Button 
+                            variant="danger" 
+                            size="sm" 
+                            className="mt-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteConfirm(chat.id);
+                            }}
+                            style={{ fontSize: '0.7rem', padding: '0.15rem 0.4rem' }}
+                          >
+                            <i className="bi bi-trash"></i>
+                          </Button>
                         </div>
                       </Nav.Link>
                     </Nav.Item>
@@ -183,6 +239,33 @@ const AdminChatManager = () => {
           </Tab.Container>
         )}
       </div>
+      
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Header className={`bg-danger text-white`}>
+          <Modal.Title>Delete Chat</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this chat? This action cannot be undone and will permanently delete all messages.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button 
+            variant="danger" 
+            onClick={deleteChat} 
+            disabled={deleting}
+          >
+            {deleting ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                <span className="ms-2">Deleting...</span>
+              </>
+            ) : 'Delete Chat'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
