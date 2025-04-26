@@ -240,4 +240,30 @@ export const deleteProduct = async (productId) => {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, productId));
   
   return true;
+};
+
+// Search products
+export const searchProducts = async (searchQuery) => {
+  // If empty query, just return all products
+  if (!searchQuery || searchQuery.trim() === '') {
+    return getProducts();
+  }
+  
+  // We'll perform a simple search by getting all products and filtering in-memory
+  // since Firestore doesn't have built-in text search capability
+  const products = await getProducts();
+  
+  // Convert the search query to lowercase for case-insensitive searching
+  const query = searchQuery.toLowerCase();
+  
+  // Filter the products based on the search query
+  return products.filter(product => {
+    // Search in name, description, and category
+    const nameMatch = product.name && product.name.toLowerCase().includes(query);
+    const descriptionMatch = product.description && product.description.toLowerCase().includes(query);
+    const categoryMatch = product.category && product.category.toLowerCase().includes(query);
+    
+    // Return true if any of the fields match
+    return nameMatch || descriptionMatch || categoryMatch;
+  });
 }; 
