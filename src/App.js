@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/config';
 import './App.css';
+import './darkMode.css';
 
 // Customer Components
 import Home from './pages/Home';
@@ -32,6 +33,7 @@ import ChatSystem from './components/ChatSystem';
 // Context Providers
 import { AuthProvider } from './context/AuthContext';
 import { ChatProvider } from './context/ChatContext';
+import { DarkModeProvider } from './context/DarkModeContext';
 
 // Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -62,62 +64,64 @@ function App() {
   return (
     <AuthProvider>
       <ChatProvider>
-        <Router>
-          <div className="App d-flex flex-column min-vh-100">
-            <Navbar user={user} />
-            <main className="flex-grow-1 page-transition" style={{ paddingTop: '76px' }}>
-              <Routes>
-                {/* Customer Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/products/:id" element={<ProductDetails />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/checkout" element={
-                  <ProtectedRoute user={user}>
-                    <Checkout />
-                  </ProtectedRoute>
-                } />
-                <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-                <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-                <Route path="/profile" element={
-                  <ProtectedRoute user={user}>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
-                <Route path="/orders" element={
-                  <ProtectedRoute user={user}>
-                    <OrderHistory />
-                  </ProtectedRoute>
-                } />
+        <DarkModeProvider>
+          <Router>
+            <div className="App d-flex flex-column min-vh-100">
+              <Navbar user={user} />
+              <main className="flex-grow-1 page-transition" style={{ paddingTop: '76px' }}>
+                <Routes>
+                  {/* Customer Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products/:id" element={<ProductDetails />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/checkout" element={
+                    <ProtectedRoute user={user}>
+                      <Checkout />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+                  <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+                  <Route path="/profile" element={
+                    <ProtectedRoute user={user}>
+                      <Profile />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/orders" element={
+                    <ProtectedRoute user={user}>
+                      <OrderHistory />
+                    </ProtectedRoute>
+                  } />
 
-                {/* Admin Routes */}
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin" element={
-                  <AdminRoute user={user}>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } />
-                <Route path="/admin/products" element={
-                  <AdminRoute user={user}>
-                    <ProductManagement />
-                  </AdminRoute>
-                } />
-                <Route path="/admin/orders" element={
-                  <AdminRoute user={user}>
-                    <OrderManagement />
-                  </AdminRoute>
-                } />
-                <Route path="/admin/customers" element={
-                  <AdminRoute user={user}>
-                    <CustomerManagement />
-                  </AdminRoute>
-                } />
-              </Routes>
-            </main>
-            <Footer />
-            <ChatSystem />
-          </div>
-        </Router>
+                  {/* Admin Routes */}
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin" element={
+                    <AdminRoute user={user}>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  } />
+                  <Route path="/admin/products" element={
+                    <AdminRoute user={user}>
+                      <ProductManagement />
+                    </AdminRoute>
+                  } />
+                  <Route path="/admin/orders" element={
+                    <AdminRoute user={user}>
+                      <OrderManagement />
+                    </AdminRoute>
+                  } />
+                  <Route path="/admin/customers" element={
+                    <AdminRoute user={user}>
+                      <CustomerManagement />
+                    </AdminRoute>
+                  } />
+                </Routes>
+              </main>
+              <Footer />
+              <ChatSystem />
+            </div>
+          </Router>
+        </DarkModeProvider>
       </ChatProvider>
     </AuthProvider>
   );
