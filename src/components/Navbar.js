@@ -3,13 +3,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar, Nav, Container, Badge, Button, Dropdown, Form, InputGroup } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-
+import { useDarkMode } from '../context/DarkModeContext';
 
 const AppNavbar = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, logout, isAdmin } = useAuth();
   const { itemCount } = useCart();
+  const { darkMode, toggleDarkMode } = useDarkMode();
   const [scrolled, setScrolled] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -73,19 +74,30 @@ const AppNavbar = ({ user }) => {
     setExpanded(false); // Close mobile menu if open
   };
 
+  // Compute navbar styles based on scroll and dark mode
+  const navbarStyle = {
+    transition: 'all 0.3s ease-in-out',
+    background: darkMode 
+      ? (scrolled ? 'var(--card-bg)' : 'linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)')
+      : (scrolled ? 'rgba(255, 255, 255, 0.95)' : 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)')
+  };
+
+  // Determine navbar variant based on dark mode and scroll
+  const navbarVariant = darkMode 
+    ? 'dark' 
+    : (scrolled ? 'light' : 'dark');
+
   return (
     <Navbar 
-      bg={scrolled ? "light" : "transparent"} 
-      variant={scrolled ? "light" : "dark"} 
+      bg={scrolled ? (darkMode ? "dark" : "light") : "transparent"} 
+      variant={navbarVariant} 
       expand="lg" 
       fixed="top" 
       className={`py-2 ${scrolled ? 'shadow-sm' : ''}`}
-      style={{
-        transition: 'all 0.3s ease-in-out',
-        background: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)'
-      }}
+      style={navbarStyle}
       expanded={expanded}
       onToggle={(expanded) => setExpanded(expanded)}
+      data-bs-theme={darkMode ? "dark" : "light"}
     >
       <Container>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
@@ -93,7 +105,6 @@ const AppNavbar = ({ user }) => {
             src="/logo.png"
             alt="Golden Oil Logo"
             width="50px"
-            
             height="50px"
             className="d-inline-block align-top me-2"
             onError={(e) => {
@@ -107,7 +118,7 @@ const AppNavbar = ({ user }) => {
         </Navbar.Brand>
         
         <Navbar.Toggle aria-controls="navbar-nav" className="border-0">
-          <i className={`bi ${expanded ? 'bi-x' : 'bi-list'} ${scrolled ? 'text-dark' : 'text-light'}`} style={{ fontSize: '1.5rem' }}></i>
+          <i className={`bi ${expanded ? 'bi-x' : 'bi-list'} ${scrolled ? (darkMode ? 'text-light' : 'text-dark') : 'text-light'}`} style={{ fontSize: '1.5rem' }}></i>
         </Navbar.Toggle>
         
         <Navbar.Collapse id="navbar-nav">
@@ -132,10 +143,20 @@ const AppNavbar = ({ user }) => {
           </Form>
           
           <Nav className="ms-auto">
+            {/* Dark Mode Toggle Button */}
+            <Button 
+              variant="link" 
+              className="dark-mode-toggle nav-link me-2 p-0"
+              onClick={toggleDarkMode}
+              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              <i className={`bi ${darkMode ? 'bi-sun' : 'bi-moon'} fs-5`}></i>
+            </Button>
+            
             <Nav.Link 
               as={Link} 
               to="/" 
-              className={`${scrolled ? (isActive('/') ? 'text-gold fw-bold' : 'text-dark') : 'text-light'} mx-1 position-relative`}
+              className={`${scrolled ? (isActive('/') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative`}
             >
               <i className="bi bi-house-door me-1"></i> Home
               {isActive('/') && <span className="position-absolute" style={{ height: '2px', width: '80%', backgroundColor: 'var(--accent-color)', bottom: '0', left: '10%' }}></span>}
@@ -144,7 +165,7 @@ const AppNavbar = ({ user }) => {
             <Nav.Link 
               as={Link} 
               to="/cart" 
-              className={`${scrolled ? (isActive('/cart') ? 'text-gold fw-bold' : 'text-dark') : 'text-light'} mx-1 position-relative`}
+              className={`${scrolled ? (isActive('/cart') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative`}
             >
               <div className="position-relative d-inline-block">
                 <i className="bi bi-cart me-1"></i> Cart
@@ -166,7 +187,7 @@ const AppNavbar = ({ user }) => {
               <Dropdown align="end">
                 <Dropdown.Toggle 
                   as="a" 
-                  className={`nav-link ${scrolled ? 'text-dark' : 'text-light'} mx-1 d-flex align-items-center cursor-pointer`} 
+                  className={`nav-link ${scrolled ? (darkMode ? 'text-light' : 'text-dark') : 'text-light'} mx-1 d-flex align-items-center cursor-pointer`} 
                   style={{ cursor: 'pointer' }}
                   id="dropdown-basic"
                 >
@@ -197,7 +218,7 @@ const AppNavbar = ({ user }) => {
                 <Nav.Link 
                   as={Link} 
                   to="/login" 
-                  className={`${scrolled ? (isActive('/login') ? 'text-gold fw-bold' : 'text-dark') : 'text-light'} mx-1 position-relative`}
+                  className={`${scrolled ? (isActive('/login') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative`}
                 >
                   <i className="bi bi-box-arrow-in-right me-1"></i> Login
                   {isActive('/login') && <span className="position-absolute" style={{ height: '2px', width: '80%', backgroundColor: 'var(--accent-color)', bottom: '0', left: '10%' }}></span>}
