@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Form, Modal, Spinner, Alert, Card, Row, Col, Badge } from 'react-bootstrap';
-import { collection, getDocs, doc, getDoc, updateDoc, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, updateDoc, query, where, orderBy, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 const CustomerManagement = () => {
@@ -13,6 +13,8 @@ const CustomerManagement = () => {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [roleUpdating, setRoleUpdating] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -149,6 +151,47 @@ const CustomerManagement = () => {
     }
   };
 
+  // Handle showing delete confirmation modal
+  const handleShowDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  // Handle hiding delete confirmation modal
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  // Delete customer function
+  const deleteCustomer = async () => {
+    if (!selectedCustomer) return;
+    
+    try {
+      setDeleting(true);
+      
+      // Reference to the customer document
+      const customerRef = doc(db, 'users', selectedCustomer.id);
+      
+      // Delete customer document from Firestore
+      await deleteDoc(customerRef);
+      
+      // Update local state to remove the customer
+      setCustomers(prevCustomers => 
+        prevCustomers.filter(c => c.id !== selectedCustomer.id)
+      );
+      
+      // Close both modals
+      setShowDeleteModal(false);
+      setShowModal(false);
+      setSelectedCustomer(null);
+      
+    } catch (err) {
+      console.error('Error deleting customer:', err);
+      setError('Failed to delete customer. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <Container className="py-4">
       <h1 className="mb-4">Customer Management</h1>
@@ -278,6 +321,17 @@ const CustomerManagement = () => {
                         : 'Grant Admin Privileges'
                     )}
                   </Button>
+                  
+                  {/* Add Delete Customer Button */}
+                  <Button
+                    variant="danger"
+                    className="w-100"
+                    onClick={handleShowDeleteModal}
+                    disabled={selectedCustomer.role === 'admin'}
+                  >
+                    <i className="bi bi-trash me-2"></i>
+                    Remove Customer
+                  </Button>
                 </Col>
               </Row>
               
@@ -302,7 +356,7 @@ const CustomerManagement = () => {
                       <tr key={order.id}>
                         <td>{order.id.substring(0, 8)}...</td>
                         <td>{formatDate(order.createdAt)}</td>
-                        <td>${order.total.toFixed(2)}</td>
+                        <td>Rs {order.total.toFixed(2)}</td>
                         <td>{getStatusBadge(order.status)}</td>
                       </tr>
                     ))}
@@ -320,6 +374,46 @@ const CustomerManagement = () => {
             </Modal.Footer>
           </>
         )}
+      </Modal>
+      
+      {/* Delete Customer Confirmation Modal */}
+      <Modal 
+        show={showDeleteModal} 
+        onHide={handleCloseDeleteModal}
+        centered
+        backdrop="static"
+      >
+        <Modal.Header className="bg-danger text-white">
+          <Modal.Title>Delete Customer</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Are you sure you want to delete this customer?</p>
+          <p><strong>Email:</strong> {selectedCustomer?.email}</p>
+          <p className="text-danger mb-0">
+            <i className="bi bi-exclamation-triangle-fill me-2"></i>
+            This action cannot be undone and will permanently remove the customer account and all associated data.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button 
+            variant="secondary" 
+            onClick={handleCloseDeleteModal}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="danger" 
+            onClick={deleteCustomer}
+            disabled={deleting}
+          >
+            {deleting ? (
+              <>
+                <Spinner animation="border" size="sm" role="status" className="me-2" />
+                Deleting...
+              </>
+            ) : 'Delete Customer'}
+          </Button>
+        </Modal.Footer>
       </Modal>
     </Container>
   );
