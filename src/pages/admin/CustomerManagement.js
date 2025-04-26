@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Form, Modal, Spinner, Alert, Card, Row, Col, Badge } from 'react-bootstrap';
+import { Container, Table, Button, Form, Modal, Spinner, Alert, Card, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 import { collection, getDocs, doc, getDoc, updateDoc, query, where, orderBy, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
@@ -15,6 +15,19 @@ const CustomerManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  
+  // Add state to track viewport width for responsive display
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  
+  // Listen for window resize events to detect mobile viewport
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchCustomers();
@@ -227,42 +240,80 @@ const CustomerManagement = () => {
           </Spinner>
         </div>
       ) : filteredCustomers.length > 0 ? (
-        <Card className="shadow-sm">
-          <Table responsive hover className="mb-0">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Registered</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <>
+          {/* Desktop View */}
+          {!isMobile && (
+            <Card className="shadow-sm d-none d-md-block">
+              <Table responsive hover className="mb-0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registered</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCustomers.map(customer => (
+                    <tr key={customer.id}>
+                      <td>{customer.displayName || 'N/A'}</td>
+                      <td>{customer.email}</td>
+                      <td>{formatDate(customer.createdAt)}</td>
+                      <td>
+                        <Badge bg={customer.role === 'admin' ? 'primary' : 'secondary'}>
+                          {customer.role || 'customer'}
+                        </Badge>
+                      </td>
+                      <td>
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm"
+                          onClick={() => handleViewCustomerClick(customer)}
+                        >
+                          View Details
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
+          )}
+          
+          {/* Mobile View */}
+          <div className="d-md-none">
+            <ListGroup className="mb-4">
               {filteredCustomers.map(customer => (
-                <tr key={customer.id}>
-                  <td>{customer.displayName || 'N/A'}</td>
-                  <td>{customer.email}</td>
-                  <td>{formatDate(customer.createdAt)}</td>
-                  <td>
-                    <Badge bg={customer.role === 'admin' ? 'primary' : 'secondary'}>
+                <ListGroup.Item key={customer.id} className="px-3 py-3 mb-2 shadow-sm">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <h6 className="mb-0">{customer.displayName || 'N/A'}</h6>
+                      <p className="text-truncate mb-0" style={{ maxWidth: '220px' }}>{customer.email}</p>
+                      <small className="text-muted">{formatDate(customer.createdAt)}</small>
+                    </div>
+                    <Badge 
+                      bg={customer.role === 'admin' ? 'primary' : 'secondary'}
+                      className="mt-1"
+                    >
                       {customer.role || 'customer'}
                     </Badge>
-                  </td>
-                  <td>
+                  </div>
+                  
+                  <div className="d-grid mt-2">
                     <Button 
                       variant="outline-primary" 
                       size="sm"
                       onClick={() => handleViewCustomerClick(customer)}
                     >
-                      View Details
+                      <i className="bi bi-eye-fill me-1"></i> View Details
                     </Button>
-                  </td>
-                </tr>
+                  </div>
+                </ListGroup.Item>
               ))}
-            </tbody>
-          </Table>
-        </Card>
+            </ListGroup>
+          </div>
+        </>
       ) : (
         <Alert variant="info">
           No customers found matching your search.
