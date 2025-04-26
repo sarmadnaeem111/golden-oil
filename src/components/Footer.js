@@ -117,19 +117,27 @@ const Footer = () => {
             <ul className="list-unstyled footer-links">
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-geo-alt-fill me-2 text-gold"></i>
-                <span className="text-light opacity-75">123 Main St, City, Country</span>
+                <span className="text-light opacity-75">Purani sabza Mandi, Abbottabad, Pakistan</span>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-telephone-fill me-2 text-gold"></i>
-                <a href="tel:+15551234567" className="text-light text-decoration-none opacity-75">+1 (555) 123-4567</a>
+                <a href="tel:+923335059703" className="text-light text-decoration-none opacity-75">03335059703</a>
+              </li>
+              <li className="mb-2 d-flex align-items-center">
+                <i className="bi bi-telephone-fill me-2 text-gold"></i>
+                <a href="tel:+923335062656" className="text-light text-decoration-none opacity-75">03335062656</a>
+              </li>
+              <li className="mb-2 d-flex align-items-center">
+                <i className="bi bi-telephone-fill me-2 text-gold"></i>
+                <a href="tel:+923425050007" className="text-light text-decoration-none opacity-75">03425050007</a>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-envelope-fill me-2 text-gold"></i>
-                <a href="mailto:contact@goldenoil.com" className="text-light text-decoration-none opacity-75">contact@goldenoil.com</a>
+                <a href="mailto:sarmadnaeem222@gmail.com" className="text-light text-decoration-none opacity-75">sarmadnaeem222@gmail.com</a>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-clock-fill me-2 text-gold"></i>
-                <span className="text-light opacity-75">Mon-Fri: 9AM - 5PM</span>
+                <span className="text-light opacity-75">Mon-Sun: 9AM - 9PM</span>
               </li>
             </ul>
           </Col>
