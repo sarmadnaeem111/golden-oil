@@ -548,3 +548,122 @@ body {
     opacity: 0.95;
   }
 }
+
+/* Responsive Admin Chat Manager */
+@media (max-width: 768px) {
+  .admin-chat-window {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+    z-index: 1100;
+  }
+  
+  .admin-chat-container {
+    flex-direction: column;
+  }
+  
+  .chat-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .chat-content {
+    height: 60vh;
+  }
+  
+  .chat-item-user {
+    max-width: 70%;
+  }
+  
+  .chat-username {
+    max-width: 100px;
+  }
+  
+  .chat-last-message {
+    max-width: 100px;
+  }
+  
+  .message-image img {
+    max-width: 200px;
+  }
+  
+  /* Show only active panel on smaller screens */
+  .chat-sidebar.chat-active-mobile {
+    display: none;
+  }
+  
+  .chat-content.chat-active-mobile {
+    height: 100%;
+  }
+  
+  /* Chat form adjustments */
+  .chat-form {
+    padding: 8px;
+  }
+  
+  .chat-input-group {
+    flex-wrap: nowrap;
+  }
+  
+  .chat-input-group .form-control {
+    height: 38px;
+    font-size: 14px;
+  }
+  
+  .chat-input-group .btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-chat-window {
+    height: 100vh;
+  }
+  
+  .chat-sidebar {
+    max-height: 35vh;
+  }
+  
+  .chat-content {
+    height: 65vh;
+  }
+  
+  .message-image img {
+    max-width: 150px;
+    max-height: 150px;
+  }
+  
+  .chat-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+  
+  .chat-username, .chat-last-message {
+    max-width: 80px;
+    font-size: 0.9rem;
+  }
+  
+  /* Smaller form elements */
+  .chat-input-group .form-control {
+    height: 36px;
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  
+  .chat-input-group .btn {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+  
+  .attach-btn {
+    font-size: 18px;
+  }
+}
