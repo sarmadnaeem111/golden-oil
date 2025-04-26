@@ -1,9 +1,11 @@
 import React from 'react';
 import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useDarkMode } from '../context/DarkModeContext';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { darkMode } = useDarkMode();
   
   // Handle newsletter signup
   const handleNewsletterSubmit = (e) => {
@@ -14,11 +16,13 @@ const Footer = () => {
   };
 
   return (
-    <footer className="pt-5 pb-4" style={{
-      background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%)',
+    <footer className={`pt-5 pb-4 ${darkMode ? 'dark-footer' : ''}`} style={{
+      background: darkMode 
+        ? 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%)' 
+        : 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%)',
       color: 'white',
       marginTop: '3rem',
-      boxShadow: '0 -10px 20px rgba(0,0,0,0.05)'
+      boxShadow: darkMode ? '0 -10px 20px rgba(0,0,0,0.2)' : '0 -10px 20px rgba(0,0,0,0.05)'
     }}>
       <Container>
         {/* Main Footer Content */}
@@ -38,7 +42,7 @@ const Footer = () => {
               />
               <h4 className="text-gold mb-0 fw-bold">Golden Oil</h4>
             </div>
-            <p className="mb-3 text-light opacity-75" style={{ fontSize: '0.9rem' }}>
+            <p className={`mb-3 ${darkMode ? 'text-light-gray' : 'text-light opacity-75'}`} style={{ fontSize: '0.9rem' }}>
               Providing premium quality oils and natural products for your wellness journey.
             </p>
             <div className="social-icons d-flex gap-3 mb-3">
@@ -62,22 +66,22 @@ const Footer = () => {
             <h5 className="text-gold mb-3 fw-bold">Quick Links</h5>
             <ul className="list-unstyled footer-links">
               <li className="mb-2">
-                <Link to="/" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> Home
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/cart" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/cart" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> Shop
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/profile" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/profile" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> My Account
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/orders" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/orders" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> Orders
                 </Link>
               </li>
@@ -89,22 +93,22 @@ const Footer = () => {
             <h5 className="text-gold mb-3 fw-bold">Information</h5>
             <ul className="list-unstyled footer-links">
               <li className="mb-2">
-                <Link to="/about" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/about" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> About Us
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/privacy" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/privacy" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> Privacy Policy
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/terms" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/terms" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> Terms & Conditions
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/shipping" className="text-light text-decoration-none opacity-75 d-flex align-items-center">
+                <Link to="/shipping" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none d-flex align-items-center`}>
                   <i className="bi bi-chevron-right me-1 text-gold" style={{ fontSize: '0.7rem' }}></i> Shipping Info
                 </Link>
               </li>
@@ -117,27 +121,27 @@ const Footer = () => {
             <ul className="list-unstyled footer-links">
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-geo-alt-fill me-2 text-gold"></i>
-                <span className="text-light opacity-75">Purani sabza Mandi, Abbottabad, Pakistan</span>
+                <span className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'}`}>Purani sabza Mandi, Abbottabad, Pakistan</span>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-telephone-fill me-2 text-gold"></i>
-                <a href="tel:+923335059703" className="text-light text-decoration-none opacity-75">03335059703</a>
+                <a href="tel:+923335059703" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none`}>03335059703</a>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-telephone-fill me-2 text-gold"></i>
-                <a href="tel:+923335062656" className="text-light text-decoration-none opacity-75">03335062656</a>
+                <a href="tel:+923335062656" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none`}>03335062656</a>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-telephone-fill me-2 text-gold"></i>
-                <a href="tel:+923425050007" className="text-light text-decoration-none opacity-75">03425050007</a>
+                <a href="tel:+923425050007" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none`}>03425050007</a>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-envelope-fill me-2 text-gold"></i>
-                <a href="mailto:sarmadnaeem222@gmail.com" className="text-light text-decoration-none opacity-75">sarmadnaeem222@gmail.com</a>
+                <a href="mailto:sarmadnaeem222@gmail.com" className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} text-decoration-none`}>sarmadnaeem222@gmail.com</a>
               </li>
               <li className="mb-2 d-flex align-items-center">
                 <i className="bi bi-clock-fill me-2 text-gold"></i>
-                <span className="text-light opacity-75">Mon-Sun: 9AM - 9PM</span>
+                <span className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'}`}>Mon-Sun: 9AM - 9PM</span>
               </li>
             </ul>
           </Col>
@@ -145,7 +149,7 @@ const Footer = () => {
           {/* Newsletter */}
           <Col lg={3} md={6} className="mb-4 mb-lg-0">
             <h5 className="text-gold mb-3 fw-bold">Newsletter</h5>
-            <p className="text-light opacity-75 mb-3" style={{ fontSize: '0.9rem' }}>
+            <p className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'} mb-3`} style={{ fontSize: '0.9rem' }}>
               Subscribe to our newsletter to receive updates and special offers.
             </p>
             <Form onSubmit={handleNewsletterSubmit}>
@@ -157,11 +161,11 @@ const Footer = () => {
                   type="email"
                   required
                   style={{
-                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.1)',
                     border: 'none',
                     color: 'white'
                   }}
-                  className="py-2"
+                  className={`py-2 ${darkMode ? 'dark-input' : ''}`}
                 />
                 <Button 
                   id="button-newsletter" 
@@ -193,8 +197,8 @@ const Footer = () => {
         
         {/* Bottom Footer */}
         <Row>
-          <Col className="text-center text-light opacity-75">
-            <small>&copy; {currentYear} Golden Oil Shop. All rights reserved.</small>
+          <Col className="text-center">
+            <small className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'}`}>&copy; {currentYear} Golden Oil Shop. All rights reserved.</small>
           </Col>
         </Row>
       </Container>
