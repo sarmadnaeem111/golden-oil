@@ -1,0 +1,19 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#7a5100" fill-opacity="0.1" />
+  
+  <!-- Oil bottle shape -->
+  <path d="M80 50 L70 70 L70 150 C70 160 80 170 100 170 C120 170 130 160 130 150 L130 70 L120 50 Z" fill="#b89038" />
+  
+  <!-- Bottle neck -->
+  <rect x="90" y="35" width="20" height="15" fill="#b89038" />
+  
+  <!-- Bottle cap -->
+  <rect x="85" y="25" width="30" height="10" rx="2" fill="#7a5100" />
+  
+  <!-- Droplet -->
+  <path d="M100 75 Q110 85 100 95 Q90 85 100 75 Z" fill="#FFFFFF" fill-opacity="0.7" />
+  
+  <!-- Golden Oil text -->
+  <text x="100" y="190" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#7a5100" text-anchor="middle">GOLDEN OIL</text>
+</svg> 

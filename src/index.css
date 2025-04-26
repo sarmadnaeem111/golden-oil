@@ -1,0 +1,128 @@
+/* Import Bootstrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Theme colors */
+  --primary-color: #7a5100;
+  --primary-dark: #523600;
+  --primary-light: #d1ac51;
+  --secondary-color: #e9e1cd;
+  --accent-color: #b89038;
+  --dark-color: #212529;
+  --light-color: #f8f9fa;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom Text Colors */
+.text-gold {
+  color: var(--accent-color) !important;
+}
+
+.bg-gold {
+  background-color: var(--accent-color) !important;
+}
+
+/* Transition effects */
+.nav-link, .btn, .social-icon {
+  transition: all 0.3s ease;
+}
+
+/* Page transitions */
+.page-transition {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Hover effects */
+.hover-text-gold:hover, 
+.social-icon:hover .bi, 
+.footer-links a:hover, 
+.footer-links a:hover .bi {
+  color: var(--accent-color) !important;
+  opacity: 1 !important;
+}
+
+.btn-outline-gold {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.btn-outline-gold:hover {
+  color: white;
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Google Sign-in button styling */
+.btn-outline-danger.google-btn {
+  border-color: #ea4335;
+  color: #ea4335;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-danger.google-btn:hover:not(:disabled) {
+  background-color: #ea4335;
+  color: white;
+  box-shadow: 0 2px 6px rgba(234, 67, 53, 0.3);
+}
+
+.btn-outline-danger.google-btn i.bi-google {
+  font-size: 1.2rem;
+}
+
+/* Payment method styling */
+.form-check-input:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.form-check-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.25rem rgba(184, 144, 56, 0.25);
+}
+
+.form-check-label {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.payment-methods i {
+  font-size: 1.25rem;
+}
+
+.nav-link:hover {
+  transform: translateY(-2px);
+}
