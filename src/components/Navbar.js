@@ -156,7 +156,7 @@ const AppNavbar = ({ user }) => {
             <Nav.Link 
               as={Link} 
               to="/" 
-              className={`${scrolled ? (isActive('/') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative`}
+              className={`${scrolled ? (isActive('/') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative d-none d-lg-block`}
             >
               <i className="bi bi-house-door me-1"></i> Home
               {isActive('/') && <span className="position-absolute" style={{ height: '2px', width: '80%', backgroundColor: 'var(--accent-color)', bottom: '0', left: '10%' }}></span>}
@@ -165,7 +165,7 @@ const AppNavbar = ({ user }) => {
             <Nav.Link 
               as={Link} 
               to="/cart" 
-              className={`${scrolled ? (isActive('/cart') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative`}
+              className={`${scrolled ? (isActive('/cart') ? 'text-gold fw-bold' : (darkMode ? 'text-light' : 'text-dark')) : 'text-light'} mx-1 position-relative d-none d-lg-block`}
             >
               <div className="position-relative d-inline-block">
                 <i className="bi bi-cart me-1"></i> Cart
@@ -182,6 +182,36 @@ const AppNavbar = ({ user }) => {
               </div>
               {isActive('/cart') && <span className="position-absolute" style={{ height: '2px', width: '80%', backgroundColor: 'var(--accent-color)', bottom: '0', left: '10%' }}></span>}
             </Nav.Link>
+            
+            {/* Mobile-specific Home link with better visibility */}
+            <div className="d-lg-none w-100 mt-2">
+              <Link 
+                to="/" 
+                className="nav-link w-100 mobile-nav-link"
+              >
+                <i className="bi bi-house-door"></i> Home
+              </Link>
+            </div>
+            
+            {/* Mobile-specific Cart link with better visibility */}
+            <div className="d-lg-none w-100 mt-2">
+              <Link 
+                to="/cart" 
+                className="nav-link w-100 mobile-nav-link"
+              >
+                <i className="bi bi-cart"></i> Cart
+                {itemCount > 0 && (
+                  <Badge 
+                    pill 
+                    bg="danger" 
+                    className="ms-2"
+                    style={{ fontSize: '0.75rem', padding: '0.25rem 0.4rem' }}
+                  >
+                    {itemCount}
+                  </Badge>
+                )}
+              </Link>
+            </div>
             
             {authenticatedUser ? (
               <Dropdown align="end">
