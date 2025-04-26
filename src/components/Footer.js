@@ -198,7 +198,7 @@ const Footer = () => {
         {/* Bottom Footer */}
         <Row>
           <Col className="text-center">
-            <small className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'}`}>&copy; {currentYear} Golden Oil Shop. All rights reserved.</small>
+            <small className={`${darkMode ? 'text-light-gray' : 'text-light opacity-75'}`}>&copy; {1996} Golden Hair Oil. All rights reserved.</small>
           </Col>
         </Row>
       </Container>
