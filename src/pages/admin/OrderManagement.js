@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Badge, Button, Form, Modal, Spinner, Alert, Card, Row, Col } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Form, Modal, Spinner, Alert, Card, Row, Col, ListGroup } from 'react-bootstrap';
 import { getAllOrders, updateOrderStatus } from '../../firebase/orderService';
 
 const OrderManagement = () => {
@@ -13,6 +13,19 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState('');
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  
+  // New state to track viewport width for responsive display
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  
+  // Listen for window resize events to detect mobile viewport
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -193,48 +206,103 @@ const OrderManagement = () => {
           </Spinner>
         </div>
       ) : filteredOrders.length > 0 ? (
-        <Card className="shadow-sm">
-          <Table responsive hover className="mb-0">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <>
+          {/* Desktop View */}
+          {!isMobile && (
+            <Card className="shadow-sm d-none d-md-block">
+              <Table responsive hover className="mb-0">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.map(order => (
+                    <tr key={order.id}>
+                      <td>{order.id.substring(0, 8)}...</td>
+                      <td>{order.userName || order.userEmail}</td>
+                      <td>{formatDate(order.createdAt)}</td>
+                      <td>Rs {order.total.toFixed(2)}</td>
+                      <td>
+                        {order.paymentMethod === 'Cash on Delivery' ? (
+                          <Badge bg="success" title="Cash on Delivery">COD</Badge>
+                        ) : (
+                          <Badge bg="info" title="Credit Card Payment">Card</Badge>
+                        )}
+                      </td>
+                      <td>{getStatusBadge(order.status)}</td>
+                      <td>
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm"
+                          onClick={() => handleViewOrderClick(order)}
+                        >
+                          Manage
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
+          )}
+          
+          {/* Mobile View */}
+          <div className="d-md-none">
+            <ListGroup className="mb-4">
               {filteredOrders.map(order => (
-                <tr key={order.id}>
-                  <td>{order.id.substring(0, 8)}...</td>
-                  <td>{order.userName || order.userEmail}</td>
-                  <td>{formatDate(order.createdAt)}</td>
-                  <td>${order.total.toFixed(2)}</td>
-                  <td>
-                    {order.paymentMethod === 'Cash on Delivery' ? (
-                      <Badge bg="success" title="Cash on Delivery">COD</Badge>
-                    ) : (
-                      <Badge bg="info" title="Credit Card Payment">Card</Badge>
-                    )}
-                  </td>
-                  <td>{getStatusBadge(order.status)}</td>
-                  <td>
+                <ListGroup.Item key={order.id} className="px-3 py-3 mb-2 shadow-sm">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <h6 className="mb-0 text-truncate" style={{ maxWidth: '150px' }} title={order.id}>
+                        #{order.id.substring(0, 8)}...
+                      </h6>
+                      <small className="text-muted">{formatDate(order.createdAt)}</small>
+                    </div>
+                    {getStatusBadge(order.status)}
+                  </div>
+                  
+                  <div className="mb-2">
+                    <div className="d-flex justify-content-between mb-1">
+                      <span>Customer:</span>
+                      <span className="text-truncate" style={{ maxWidth: '180px' }}>
+                        {order.userName || order.userEmail}
+                      </span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-1">
+                      <span>Total:</span>
+                      <strong>Rs {order.total.toFixed(2)}</strong>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <span>Payment:</span>
+                      {order.paymentMethod === 'Cash on Delivery' ? (
+                        <Badge bg="success" title="Cash on Delivery">COD</Badge>
+                      ) : (
+                        <Badge bg="info" title="Credit Card Payment">Card</Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="d-grid">
                     <Button 
                       variant="outline-primary" 
                       size="sm"
                       onClick={() => handleViewOrderClick(order)}
                     >
-                      Manage
+                      <i className="bi bi-gear-fill me-1"></i> Manage Order
                     </Button>
-                  </td>
-                </tr>
+                  </div>
+                </ListGroup.Item>
               ))}
-            </tbody>
-          </Table>
-        </Card>
+            </ListGroup>
+          </div>
+        </>
       ) : (
         <Alert variant="info">
           No orders found matching the selected filter.
@@ -260,7 +328,7 @@ const OrderManagement = () => {
                   <p className="mb-1"><strong>Order ID:</strong> {selectedOrder.id}</p>
                   <p className="mb-1"><strong>Date:</strong> {formatDate(selectedOrder.createdAt)}</p>
                   <p className="mb-1"><strong>Status:</strong> {getStatusBadge(selectedOrder.status)}</p>
-                  <p className="mb-1"><strong>Total:</strong> ${selectedOrder.total.toFixed(2)}</p>
+                  <p className="mb-1"><strong>Total:</strong> Rs {selectedOrder.total.toFixed(2)}</p>
                   <p className="mb-1">
                     <strong>Payment Method:</strong> {selectedOrder.paymentMethod || 'Credit Card'}
                     {selectedOrder.paymentDetails?.lastFour && (
@@ -299,9 +367,9 @@ const OrderManagement = () => {
                   {selectedOrder.items.map((item, index) => (
                     <tr key={index}>
                       <td>{item.name}</td>
-                      <td>${item.price.toFixed(2)}</td>
+                      <td>Rs {item.price.toFixed(2)}</td>
                       <td>{item.quantity}</td>
-                      <td>${(item.price * item.quantity).toFixed(2)}</td>
+                      <td>Rs {(item.price * item.quantity).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
