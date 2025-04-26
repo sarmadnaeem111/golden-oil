@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import OrderHistory from './pages/OrderHistory';
+import Search from './pages/Search';
 
 // Admin Components
 import AdminLogin from './pages/admin/AdminLogin';
@@ -70,6 +71,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/products/:id" element={<ProductDetails />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/checkout" element={
                   <ProtectedRoute user={user}>
                     <Checkout />
