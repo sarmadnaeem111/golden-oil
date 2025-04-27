@@ -161,15 +161,15 @@ const ProductDetails = () => {
             <div className="mb-4">
               <p className="mb-1 text-muted">Regular price:</p>
               <h4 className="text-decoration-line-through text-muted mb-2">
-                ${product.price.toFixed(2)}
+                Rs {product.price.toFixed(2)}
               </h4>
               <p className="mb-1 text-danger">Discount price:</p>
               <h3 className="text-primary">
-                ${finalPrice.toFixed(2)} <span className="ms-2 fs-6 text-danger">Save {product.discount}%</span>
+                Rs {finalPrice.toFixed(2)} <span className="ms-2 fs-6 text-danger">Save {product.discount}%</span>
               </h3>
             </div>
           ) : (
-            <h3 className="text-primary mb-4">${product.price.toFixed(2)}</h3>
+            <h3 className="text-primary mb-4">Rs {product.price.toFixed(2)}</h3>
           )}
           
           {/* Display weight information if available */}
