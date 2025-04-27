@@ -80,14 +80,14 @@ const Cart = () => {
                     {item.discount > 0 ? (
                       <div>
                         <span className="text-decoration-line-through text-muted d-block">
-                          ${item.price.toFixed(2)}
+                          Rs {item.price.toFixed(2)}
                         </span>
                         <span className="text-danger">
-                          ${item.finalPrice.toFixed(2)}
+                          Rs {item.finalPrice.toFixed(2)}
                         </span>
                       </div>
                     ) : (
-                      <>${item.price.toFixed(2)}</>
+                      <>Rs {item.price.toFixed(2)}</>
                     )}
                   </td>
                   <td>
@@ -100,7 +100,7 @@ const Cart = () => {
                     />
                   </td>
                   <td>
-                    ${((item.finalPrice || item.price) * item.quantity).toFixed(2)}
+                    Rs {((item.finalPrice || item.price) * item.quantity).toFixed(2)}
                   </td>
                   <td>
                     <Button 
@@ -137,7 +137,7 @@ const Cart = () => {
             <Card.Body>
               <div className="d-flex justify-content-between mb-3">
                 <span>Items ({items.reduce((acc, item) => acc + item.quantity, 0)}):</span>
-                <span>${total.toFixed(2)}</span>
+                <span>Rs {total.toFixed(2)}</span>
               </div>
               <div className="d-flex justify-content-between mb-3">
                 <span>Shipping:</span>
@@ -146,7 +146,7 @@ const Cart = () => {
               <hr />
               <div className="d-flex justify-content-between mb-3 fw-bold">
                 <span>Total:</span>
-                <span>${total.toFixed(2)}</span>
+                <span>Rs {total.toFixed(2)}</span>
               </div>
               <Button 
                 variant="primary" 
