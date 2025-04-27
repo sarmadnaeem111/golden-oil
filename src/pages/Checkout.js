@@ -323,7 +323,7 @@ const Checkout = () => {
                   {items.map(item => (
                     <div key={item.id} className="d-flex justify-content-between mb-2">
                       <span>{item.name} × {item.quantity}</span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <span>₹{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -332,7 +332,7 @@ const Checkout = () => {
                 
                 <div className="d-flex justify-content-between mb-2">
                   <span>Subtotal</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Shipping</span>
@@ -340,7 +340,7 @@ const Checkout = () => {
                 </div>
                 <div className="d-flex justify-content-between mb-2 fw-bold">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
                 
                 <Button 
@@ -358,8 +358,8 @@ const Checkout = () => {
                   ) : (
                     <>
                       {paymentMethod === 'cod' 
-                        ? `Place Order (Cash on Delivery) - $${total.toFixed(2)}`
-                        : `Place Order - $${total.toFixed(2)}`
+                        ? `Place Order (Cash on Delivery) - ₹${total.toFixed(2)}`
+                        : `Place Order - ₹${total.toFixed(2)}`
                       }
                     </>
                   )}
