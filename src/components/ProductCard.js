@@ -70,15 +70,15 @@ const ProductCard = ({ product }) => {
           {product.discount > 0 ? (
             <div className="mb-2">
               <span className="text-decoration-line-through text-muted me-2">
-                ${product.price.toFixed(2)}
+                Rs {product.price.toFixed(2)}
               </span>
               <span className="fs-5 fw-bold text-primary">
-                ${finalPrice.toFixed(2)}
+                Rs {finalPrice.toFixed(2)}
               </span>
             </div>
           ) : (
             <Card.Text className="fs-5 fw-bold text-primary mb-2">
-              ${product.price.toFixed(2)}
+              Rs {product.price.toFixed(2)}
             </Card.Text>
           )}
           <div className="d-flex justify-content-between">
