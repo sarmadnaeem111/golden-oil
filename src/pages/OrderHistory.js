@@ -107,7 +107,7 @@ const OrderHistory = () => {
                 <Row className="mb-3">
                   <Col md={6}>
                     <p className="mb-1"><strong>Date:</strong> {formatDate(order.createdAt)}</p>
-                    <p className="mb-1"><strong>Total:</strong> ${order.total.toFixed(2)}</p>
+                    <p className="mb-1"><strong>Total:</strong> ₹{order.total.toFixed(2)}</p>
                   </Col>
                   <Col md={6}>
                     <p className="mb-1"><strong>Shipping Address:</strong></p>
@@ -131,9 +131,9 @@ const OrderHistory = () => {
                     {order.items.map((item, index) => (
                       <tr key={`${order.id}-${item.id || index}`}>
                         <td>{item.name}</td>
-                        <td>${item.price.toFixed(2)}</td>
+                        <td>₹{item.price.toFixed(2)}</td>
                         <td>{item.quantity}</td>
-                        <td>${(item.price * item.quantity).toFixed(2)}</td>
+                        <td>₹{(item.price * item.quantity).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
